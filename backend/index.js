@@ -1,55 +1,91 @@
 require("dotenv").config()
+const cors = require('cors')
 const express = require("express")
+const jwt = require("jsonwebtoken")
+const port = process.env.PORT
+const jwtSecret = process.env.JWT_SECRET
 
+//Import DB.js
 const db = require("./db")
 
 //Start Express
 const app = express()
 
+//Alow CORS origen
+app.use(cors())
+
 //Json to object converter 
 app.use(express.json())
 
-//Delete
-app.delete("/clientes/:id", async (req, res) => {
-    const id = parseInt(req.params.id)
-    await db.deleteCustumer(id)
-    res.sendStatus(204);
+//Validador JWT
+function verifyJWT(req, res, next){
+    const authHeader = req.headers['authorization']
+    const token = authHeader && authHeader.split(' ')[1]
+    if (token == null) return res.sendStatus(401)
+
+    jwt.verify(token, jwtSecret, (err, decoded) => {
+        if(err) return res.json( { message: "Usuário não autorizado" }) //res.sendStatus(403)
+        req.userId = decoded.userId
+        next();
+    } )
+}
+
+//Login
+app.post("/login", async (req, res) => {
+    const userName = req.body.userName;
+    const password = req.body.password;
+    const results = await db.userLogin(userName, password)
+
+    if (results.length > 0){
+        const token = jwt.sign( {userId: results[0].id}, jwtSecret, {expiresIn: '1d'} )
+        res.json({ auth: true, id: results[0].id, token} )
+    } else {
+        res.json( { message: "Usuário não foi encontrado" }) //res.sendStatus(401);
+    }
+    
 })
 
-//Update
-app.patch("/clientes/:id", async (req, res) => {
+//Delete
+app.delete("/users_data/:id", verifyJWT, async (req, res) => {
+    const id = parseInt(req.params.id)
+    await db.deleteUser(id)
+    res.json( "deleted" ) // res.sendStatus(204);
+})
+
+//Patch
+app.patch("/users_data/:id", verifyJWT, async (req, res) => {
     const id = parseInt(req.params.id);
     const custumer = req.body;
-    await db.updateCustumer(id, custumer);
-    res.sendStatus(200);
+    await db.updateUser(id, custumer);
+    res.json( "patched" ) //res.sendStatus(200);
 })
 
-//Insert
-app.post("/clientes", async (req, res) => {
+//Post
+app.post("/users_data", verifyJWT, async (req, res) => {
     const custumer = req.body;
-    await db.insertCustumer(custumer);
+    await db.insertUser(custumer);
     res.sendStatus(201);
 })
 
-//Select
-app.get("/clientes/:id", async (req, res) => {
+//Get user
+app.get("/users_data/:id", verifyJWT, async (req, res) => {    
     const id = parseInt(req.params.id)
-    const results = await db.selectCustumer(id)
+    const results = await db.selectUser(id)
     res.json(results)
 })
 
-//Get all
-app.get("/clientes", async (req, res) => {
-    const results = await db.selectCustumers()
+//Get all user
+app.get("/users_data", verifyJWT, async (req, res) => {
+    const results = await db.selectUsers()
     res.json(results)
 })
 
 //Root
-app.get("/", (req, res, next) => {
-    res.json( { message: "Rota raiz -> '/' " } )
+app.get("/", verifyJWT, (req, res) => {
+    res.json( "Rota raiz -> '/' " )
 })
 
 //Server
-app.listen(process.env.PORT, () => {
-    console.log("App is running!!!")
+app.listen(port, () => {
+    console.log(`App is running on port -> ${port}`)
 })

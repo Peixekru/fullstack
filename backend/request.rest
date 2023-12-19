@@ -1,0 +1,43 @@
+
+
+POST http://localhost:3000/login
+Content-Type: application/json
+
+{
+    "userName": "Tiago",
+	"password": "Peixekru1"
+}
+
+###
+
+GET http://localhost:3000/users_data
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTcwMzAwOTQ5NywiZXhwIjoxNzAzMDA5NTI3fQ.Q9thk0Yhi_DCXdMtxZeP2bpvG1PVa9IyCjDgsJdf30A
+
+###
+
+GET http://localhost:3000/users_data/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTcwMzAwODY1NSwiZXhwIjoxNzAzMDk1MDU1fQ.tB8XZ4Nu3m1L0ali92a9zWj6IPTTzIyVqY7Y3AoUBoE
+
+###
+
+POST http://localhost:3000/users_data
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTcwMjk5ODM1MiwiZXhwIjoxNzAzMDA4MzUyfQ.cRWRKVvkqGB--LArvxlcydz3KvPgW4tM-TrGmROsAXM
+
+{
+    "nome": "Novo",
+	"idade": 44,
+	"uf": "AC"
+}
+
+###
+
+PATCH http://localhost:3000/users_data/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTcwMjk5ODM1MiwiZXhwIjoxNzAzMDA4MzUyfQ.cRWRKVvkqGB--LArvxlcydz3KvPgW4tM-TrGmROsAXM
+
+{
+    "nome": "Tiago",
+	"idade": 42,
+	"uf": "P2"
+}
