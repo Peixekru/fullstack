@@ -1,3 +1,4 @@
+import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import axios from 'axios'
 
@@ -5,9 +6,15 @@ export const useApi = defineStore('api', () => {
 
   const baseURL = import.meta.env.VITE_BASE_URL
 
+  //auth: '' , id: '', token: ''
+  const userInfo = ref({})
+
   //JWT AUTH 
   const authorize = () => {
-    return { headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` } }
+    if ( sessionStorage.getItem('userInfo') ){ 
+      userInfo.value = JSON.parse( sessionStorage.getItem('userInfo') ) 
+    }
+    return { headers: { Authorization: `Bearer ${userInfo.value.token}` } }
   }
 
   //GET
@@ -34,7 +41,6 @@ export const useApi = defineStore('api', () => {
     catch (error) { console.error(error) }
   }
 
-  return { _get, _post, _patch, _delete }
+  return { _get, _post, _patch, _delete, userInfo }
 
 })
-

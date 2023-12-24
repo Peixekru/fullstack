@@ -32,9 +32,9 @@ function verifyJWT(req, res, next){
 
 //Login
 app.post("/login", async (req, res) => {
-    const userName = req.body.userName;
+    const username = req.body.username;
     const password = req.body.password;
-    const results = await db.userLogin(userName, password)
+    const results = await db.userLogin(username, password)
 
     if (results.length > 0){
         const token = jwt.sign( {userId: results[0].id}, jwtSecret, {expiresIn: '1d'} )

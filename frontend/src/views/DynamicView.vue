@@ -8,12 +8,12 @@
         </h1>
     </div>
 
-    <div v-if="results">
+    <div v-if="userData">
         <br />
         <p>Dados do Mysql</p>
-        <p>Nome: {{ results.nome }}</p>
-        <p>Idade: {{ results.idade }}</p>
-        <p>Uf: {{ results.uf }}</p>
+        <p>Nome: {{ userData.nome }}</p>
+        <p>Idade: {{ userData.idade }}</p>
+        <p>Uf: {{ userData.uf }}</p>
     </div>
     
 </template>
@@ -26,14 +26,15 @@
     const api = useApi()
     const route = useRoute()
 
-    const routeParms = ref(parseInt(route.params.id))
+    const routeParms = ref(parseInt(route.params.id))   
     const routePath = ref(route.path)
 
-    let results = ref({})
+    let userData = ref({})
 
-    const get = ( async function () {
-        results.value = await api.get( `/clientes/${route.params.id}` )
-        //results.value = await api.get( route.path )
+    const get = ( async function () { 
+        //const res = await api._get( `/users_data/${route.params.id}` )
+        const res = await api._get(route.path)
+        userData.value = res.data[0]
     }())
     
 </script>

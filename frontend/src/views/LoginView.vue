@@ -1,4 +1,5 @@
 <script setup>
+
   import { ref } from 'vue';
   import { useApi } from '@/stores/api'
   import { useRoute, useRouter } from 'vue-router'
@@ -8,38 +9,45 @@
   const router = useRouter()
 
   const userInfos = ref ({ 
-    'userName' : '', 
-    'passWord' : '' 
+    'username' : '', 
+    'password' : '' 
   })
 
   const post = async () => { 
     const res = await api._post( route.path, userInfos.value )
-    if(!res.data.token) return console.error('Get JWT token faild.')
-    sessionStorage.setItem("token", res.data.token) 
+    if(!res.data.token) return console.error('Login faild.')
+    //Token exist
+    sessionStorage.setItem("userInfo", JSON.stringify( res.data ))
     router.push({ path: '/home' })
   }
 
 </script>
 
+
 <template>
+
   <div class="container">
     <div class="card">
       <div>
         <p>Digite seu nome:</p>
-        <input v-model="userInfos.userName" placeholder="nome" name="nome" type="text"/>
+        <input v-model="userInfos.username" placeholder="nome" name="nome" type="text"/>
       </div>
       <div>
         <p>Digite sua senha:</p>
         <input v-model="userInfos.password" placeholder="password" name="password" type="password"/>
       </div>
-      <button class="top-space" :disabled="userInfos.userName == '' || userInfos.password == '' " @click="post">
+      <button class="top-space" :disabled="userInfos.username == '' || userInfos.password == '' " 
+      @click="post">
         Entrar
       </button>
     </div>
   </div>
+
 </template>
 
+
 <style scoped>
+
 .container{
   display: flex;
   justify-content: center;
@@ -61,4 +69,5 @@
 p{
   margin: .3em !important;
 }
+
 </style>

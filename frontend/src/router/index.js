@@ -4,7 +4,7 @@ const routes = [
   { path: '/', redirect: '/login' },
   { path: '/login', name: 'Login', component: () => import ('@/views/LoginView.vue') },
   { path: '/home', name: 'Home', component: () => import ('@/views/HomeView.vue') },
-  { path: '/clientes/:id', name:'Dynamic', component: () => import ('@/views/DynamicView.vue') },
+  { path: '/users_data/:id', name:'Dynamic', component: () => import ('@/views/DynamicView.vue') },
   { path: '/:pathMatch(.*)*', name:'NotFound', component: () => import ('@/views/NotFoundView.vue') },
 ]
 

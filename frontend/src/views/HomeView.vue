@@ -2,7 +2,11 @@
 
   import { ref, onMounted } from 'vue';
   import { useApi } from '@/stores/api'
+  import { useRoute, useRouter } from 'vue-router'
+
   const api = useApi()
+  const route = useRoute()
+  const router = useRouter()
 
   const userId = ref('')
   const deleteUserId = ref('')
@@ -37,6 +41,8 @@
     } 
   }
 
+
+
   const get = async (param) => { 
     const res = await api._get(param) 
     results.value = res.data
@@ -61,11 +67,20 @@
     get('/')
   })
 
+
 </script>
 
 <template>
 
   <div class="container">
+
+    <div class="nav-btns">
+
+      <button @click="router.push({ path: `/users_data/${api.userInfo.id}` })">
+          Go to id {{ api.userInfo.id }}
+      </button>
+    
+    </div>
 
     <div class="nav-btns">
     
@@ -98,7 +113,8 @@
       </div>
 
       <div class="col">
-        <button @click="patch('/users_data/' + updateId, updateUser())">
+        <button :disabled="updateId == ''|| updateId == 0 " 
+        @click="patch('/users_data/' + updateId, updateUser())">
           Patch by id
         </button>
         <input v-model="updateId" placeholder="id" name="id"/>
@@ -108,7 +124,8 @@
       </div>
 
       <div class="col">
-        <button :disabled="deleteUserId == '' || deleteUserId == 0" @click="deleteUser('/users_data/' + deleteUserId)">
+        <button :disabled="deleteUserId == '' || deleteUserId == 0" 
+        @click="deleteUser('/users_data/' + deleteUserId)">
           Delete
         </button>
         <input v-model="deleteUserId" placeholder="id" name="id"/>
@@ -116,7 +133,6 @@
       
     </div>
     
-
     <div v-if="results != null" class="results">
       <h2>
         Resultado:
@@ -132,7 +148,6 @@
 </template>
 
 <style scoped>
-
   .container{
     display: flex;
     justify-content: center;
@@ -140,13 +155,11 @@
     flex-direction:column;
     width: 100%;
   }
-
   .nav-btns{
     display: flex;
     justify-content: space-around;
     align-items: start;
   }
-
   .col{
     flex: 1;
     padding: 1em;
@@ -154,7 +167,6 @@
     justify-content: center;
     flex-direction:column;
   }
-  
   .rootPoint{
     width: 50%;
     margin: 2em;
@@ -168,5 +180,4 @@
     padding: 2em;
     border-top: 1px dotted #333;
   }
-
 </style>
